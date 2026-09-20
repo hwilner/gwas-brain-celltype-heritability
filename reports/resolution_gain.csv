@@ -1,0 +1,3 @@
+trait,n_sig_supercluster,n_sig_cluster,min_p_supercluster,min_p_cluster
+AD_FinnGen_R11,4,9,1.0284642367793459e-08,2.1893999513939305e-21
+PD_FinnGen_R11,0,11,0.0035197101109787476,5.299734451131678e-13

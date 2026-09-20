@@ -1,0 +1,66 @@
+{
+  "pipeline": "in-repo MAGMA-style (scripts/run_magma_enrichment.py)",
+  "window_bp": 10000,
+  "top_n": 100,
+  "n_genes": 18551,
+  "atlas_md5": {
+    "cluster_annotation_term.csv": "2533ac1498b35a1ce386a3d97137e9c3",
+    "cluster.csv": "c5648d1c646f64c590ff9c9dac53e17b",
+    "cluster_to_cluster_annotation_membership.csv": "ae0850e319e8a3162d72bdcc971106e1",
+    "gene.csv": "d3400fda8166398e49e994cf36a39028",
+    "query_markers.n10.20240221800.json": "286e1fcc3491b11a13ce7cb35a618733",
+    "cluster_annotation_term_set.csv": "89d131f4afabf925019e4d405c2a150d"
+  },
+  "traits": {
+    "AD_FinnGen_R11": {
+      "qc": {
+        "rows_in": 21306794,
+        "autosomes": 20488080,
+        "valid_stats": 18633293,
+        "dedup_dropped": 67502,
+        "rows_out": 18565791
+      },
+      "gwas_md5": "30a0a6701918fedfe84665cf33e46eb2",
+      "class": {
+        "n_programs_tested": 2,
+        "n_fdr05": 0,
+        "top": "Neuronal"
+      },
+      "supercluster": {
+        "n_programs_tested": 30,
+        "n_fdr05": 4,
+        "top": "Oligodendrocyte precursor"
+      },
+      "cluster": {
+        "n_programs_tested": 436,
+        "n_fdr05": 9,
+        "top": "Mgl_9"
+      }
+    },
+    "PD_FinnGen_R11": {
+      "qc": {
+        "rows_in": 21306794,
+        "autosomes": 20488080,
+        "valid_stats": 18633311,
+        "dedup_dropped": 67502,
+        "rows_out": 18565809
+      },
+      "gwas_md5": "da8da233c84966b069b8a9f2fd154363",
+      "class": {
+        "n_programs_tested": 2,
+        "n_fdr05": 0,
+        "top": "Neuronal"
+      },
+      "supercluster": {
+        "n_programs_tested": 30,
+        "n_fdr05": 0,
+        "top": "Microglia"
+      },
+      "cluster": {
+        "n_programs_tested": 436,
+        "n_fdr05": 11,
+        "top": "CA4_197"
+      }
+    }
+  }
+}
