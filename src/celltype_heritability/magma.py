@@ -30,19 +30,39 @@ def map_snps_to_genes(
     Returns
     -------
     Mapping of gene name -> list of SNP row indices.
-    """
-    from .annotations import add_flank, binarize_annotation, table_to_bed
 
-    beds = {
-        g: table_to_bed(grp, name_col="gene")
-        for g, grp in genes.groupby("gene")
-    }
-    return {
-        g: list(
-            np.flatnonzero(binarize_annotation(add_flank(bed, window), snps))
+    Notes
+    -----
+    Uses a per-chromosome sorted-position sweep (binary search per gene),
+    so it scales to genome-wide SNP sets (millions of SNPs x ~20k genes).
+    """
+    if not {"chrom", "pos"} <= set(snps.columns):
+        raise ValueError("snps must have 'chrom' and 'pos' columns")
+    for col in ("gene", "chrom", "start", "end"):
+        if col not in genes.columns:
+            raise ValueError(f"genes is missing required column {col!r}")
+
+    out: dict[str, list[int]] = {}
+    chrom_pos: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+    for chrom, idx in snps.groupby("chrom", sort=False).groups.items():
+        idx = np.asarray(idx)
+        order = np.argsort(snps["pos"].to_numpy()[snps.index.get_indexer(idx)])
+        chrom_pos[str(chrom)] = (
+            idx[order],
+            snps["pos"].to_numpy()[snps.index.get_indexer(idx)][order],
         )
-        for g, bed in beds.items()
-    }
+    for gene, grp in genes.groupby("gene", sort=False):
+        hits: list[int] = []
+        for _, row in grp.iterrows():
+            key = str(row["chrom"])
+            if key not in chrom_pos:
+                continue
+            idx, pos = chrom_pos[key]
+            lo = np.searchsorted(pos, row["start"] - window, side="left")
+            hi = np.searchsorted(pos, row["end"] + window, side="right")
+            hits.extend(idx[lo:hi].tolist())
+        out[str(gene)] = sorted(set(hits))
+    return out
 
 
 def gene_test_statistics(z: np.ndarray, snp_map: dict[str, list[int]]) -> pd.Series:
@@ -103,3 +123,16 @@ def program_enrichment(
             )
         )
     return pd.DataFrame(rows, index=list(gene_sets))
+
+
+def bh_fdr(p_values: pd.Series) -> pd.Series:
+    """Benjamini-Hochberg FDR-adjusted q-values (deterministic)."""
+    p = p_values.to_numpy(dtype=float)
+    n = len(p)
+    order = np.argsort(p)
+    ranked = p[order]
+    q = ranked * n / (np.arange(n) + 1)
+    q = np.minimum.accumulate(q[::-1])[::-1]
+    out = np.empty(n)
+    out[order] = np.minimum(q, 1.0)
+    return pd.Series(out, index=p_values.index)
