@@ -1,0 +1,32 @@
+program,n_genes,level
+Amygdala excitatory,100,supercluster
+Astrocyte,100,supercluster
+Bergmann glia,0,supercluster
+CGE interneuron,100,supercluster
+Cerebellar inhibitory,100,supercluster
+Choroid plexus,100,supercluster
+Committed oligodendrocyte precursor,100,supercluster
+Deep-layer corticothalamic and 6b,100,supercluster
+Deep-layer intratelencephalic,100,supercluster
+Deep-layer near-projecting,100,supercluster
+Eccentric medium spiny neuron,100,supercluster
+Ependymal,100,supercluster
+Fibroblast,100,supercluster
+Hippocampal CA1-3,100,supercluster
+Hippocampal CA4,100,supercluster
+Hippocampal dentate gyrus,100,supercluster
+LAMP5-LHX6 and Chandelier,100,supercluster
+Lower rhombic lip,100,supercluster
+MGE interneuron,100,supercluster
+Mammillary body,100,supercluster
+Medium spiny neuron,100,supercluster
+Microglia,100,supercluster
+Midbrain-derived inhibitory,100,supercluster
+Miscellaneous,100,supercluster
+Oligodendrocyte,100,supercluster
+Oligodendrocyte precursor,100,supercluster
+Splatter,100,supercluster
+Thalamic excitatory,100,supercluster
+Upper rhombic lip,100,supercluster
+Upper-layer intratelencephalic,100,supercluster
+Vascular,100,supercluster
