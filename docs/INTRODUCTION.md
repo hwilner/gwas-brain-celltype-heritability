@@ -18,7 +18,7 @@ The logic of this paper is therefore straightforward: if a trait's heritability 
 
 ## Prior work and gap
 
-Skene et al. [7] first mapped schizophrenia loci onto specific brain cell types using expression-weighted enrichment, implicating pyramidal cells, medium spiny neurons, and interneurons. Bryois et al. [6] extended this approach across a panel of brain traits, identifying, among other findings, oligodendrocyte signals for multiple sclerosis and neuronal signals for psychiatric traits, using single-cell references of roughly a few hundred types. Finucane et al. established the general S-LDSC [1] and specifically-expressed-gene frameworks [2]; de Leeuw et al. provided MAGMA [3]; Jagadeesh et al. added sc-linker's epigenomic linkage layer [4].
+Skene et al. [7] first mapped schizophrenia loci onto specific brain cell types using expression-weighted enrichment, implicating pyramidal cells, medium spiny neurons, and interneurons. Bryois et al. [6] extended this approach across a panel of brain traits, identifying, among other findings, oligodendrocyte signals for multiple sclerosis and neuronal signals for psychiatric traits, using single-cell references of roughly a few hundred types. Finucane et al. established the general S-LDSC framework [1] and the specifically-expressed-gene extension [2]; de Leeuw et al. provided MAGMA [3]; Jagadeesh et al. added sc-linker's epigenomic linkage layer [4].
 
 Three gaps remain. (1) **Resolution:** prior brain-trait enrichment studies used references with tens to a few hundred cell types; the ABC taxonomy offers >3,000, including glial states relevant to AD and PD that coarse labels blur [5]. (2) **Consistency:** prior studies differed in GWAS versions, reference panels, and methods, making results hard to compare across traits; a single harmonized pipeline across methods removes this confound. (3) **Hierarchy:** enrichment at one level (e.g., "microglia") may mask heterogeneity at another (e.g., disease-associated microglial states); no prior work has systematically tested heritability across a full cell-type hierarchy with formal level-aware multiple-testing control.
 
@@ -33,17 +33,17 @@ Three gaps remain. (1) **Resolution:** prior brain-trait enrichment studies used
 
 | Resource | Content | Scale | Access |
 |---|---|---|---|
-| Allen Brain Cell Atlas — human whole brain (Siletti et al. 2023) | snRNA-seq taxonomy | ~3M nuclei, >3,000 types | Open (ABC Atlas / CELLxGENE) |
-| AD GWAS (Bellenguez et al. 2022) | Summary statistics | ~111k cases / ~677k controls | Open (GWAS Catalog, GCST90027158) |
-| PD GWAS (Nalls et al. 2019) | Summary statistics | ~33k cases + proxy cases | Open |
-| Schizophrenia GWAS (Trubetskoy et al. 2022) | Summary statistics | ~76k cases / ~244k controls | Open (PGC) |
-| Depression GWAS (Wray et al. 2018; Howard et al. 2019) | Summary statistics | up to ~246k cases | Open (PGC) |
-| Roadmap Epigenomics chromatin maps | Baseline regulatory annotations | 111 reference epigenomes | Open |
+| Allen Brain Cell Atlas — human whole brain (Siletti et al. 2023) [5] | snRNA-seq taxonomy | ~3M nuclei, >3,000 types | Open (ABC Atlas / CELLxGENE) |
+| AD GWAS (Bellenguez et al. 2022) [12] | Summary statistics | ~111k cases / ~677k controls | Open (GWAS Catalog, GCST90027158) |
+| PD GWAS (Nalls et al. 2019) [13] | Summary statistics | ~33k cases + proxy cases | Open |
+| Schizophrenia GWAS (Trubetskoy et al. 2022) [8] | Summary statistics | ~76k cases / ~244k controls | Open (PGC) |
+| Depression GWAS (Wray et al. 2018 [9]; Howard et al. 2019 [10]) | Summary statistics | up to ~246k cases | Open (PGC) |
+| Roadmap Epigenomics chromatin maps [14] | Baseline regulatory annotations | 111 reference epigenomes | Open |
 | 1000 Genomes EUR reference | LD panel | 489 individuals | Open |
 
 ## Methods
 
-GWAS summary statistics are harmonized (build liftover, allele harmonization, munging to LDSC format). From the ABC taxonomy we derive, at every hierarchy level, (i) top specifically expressed genes per cell type (for MAGMA gene sets and specifically-expressed-gene S-LDSC annotations [2]) and (ii) cell-type-specific accessible regions from snATAC-seq where available. S-LDSC with the baseline-LD model estimates per-annotation heritability enrichment and coefficient significance [1]; MAGMA gene analysis followed by gene-set regression tests cell-type gene sets conditioning on expression covariates [3]; sc-linker builds enhancer-gene-linked programs and tests their disease association [4]. Multiple testing is controlled with FDR within each trait × level, with a Bonferroni check across the full hierarchy. Method concordance is assessed per cell type, and positive-control traits (e.g., blood traits against immune cell types as negative controls) validate calibration.
+GWAS summary statistics are harmonized (build liftover, allele harmonization, munging to LDSC format), with LD Score regression intercepts used to verify that observed inflation reflects polygenicity rather than residual confounding [11]. From the ABC taxonomy we derive, at every hierarchy level, (i) top specifically expressed genes per cell type (for MAGMA gene sets and specifically-expressed-gene S-LDSC annotations [2]) and (ii) cell-type-specific accessible regions from snATAC-seq where available. S-LDSC with the baseline-LD model estimates per-annotation heritability enrichment and coefficient significance [1]; MAGMA gene analysis followed by gene-set regression tests cell-type gene sets conditioning on expression covariates [3]; sc-linker builds enhancer-gene-linked programs and tests their disease association [4]. Multiple testing is controlled with FDR within each trait × level, with a Bonferroni check across the full hierarchy. Method concordance is assessed per cell type, and calibration is validated with positive-control contrasts (e.g., blood traits against immune cell types) and matched negative controls.
 
 ## Expected contributions
 
