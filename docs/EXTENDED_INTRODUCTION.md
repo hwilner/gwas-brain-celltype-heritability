@@ -91,7 +91,7 @@ The core test of this paper fits in one small table. Suppose we have computed a 
 | I | 4.0 | no |
 | J | 3.6 | no |
 
-The microglia markers sit at the top: average 8.6 versus 4.7 for the rest. **Enrichment** is exactly this observation — "the marker genes carry unusually high disease scores" — scaled by how surprising it is given the spread of the scores. That scaled surprise is the **enrichment z-score** reported throughout our results. (In the real analysis the "yes/no" column comes from the top-100 ranked marker genes of each cell type, and the comparison is run as a regression so other explanations can be adjusted away [2,3].)
+The microglia markers sit at the top: average 8.6 versus 4.9 for the rest. **Enrichment** is exactly this observation — "the marker genes carry unusually high disease scores" — scaled by how surprising it is given the spread of the scores. That scaled surprise is the **enrichment z-score** reported throughout our results. (In the real analysis the "yes/no" column comes from the top-100 ranked marker genes of each cell type, and the comparison is run as a regression so other explanations can be adjusted away [2,3].)
 
 One more piece of honesty machinery. If we test 436 cell types, then even if *nothing* is truly enriched, a few will look impressive by pure luck — like flipping 436 coins and being amazed at the one that landed heads 8 times in a row. The **FDR q-value** (Benjamini–Hochberg) fixes this by estimating, among the cell types we call significant, what fraction are probably luck. "FDR < 0.05" means: at most about 5% of the names on this list are expected to be false alarms.
 
