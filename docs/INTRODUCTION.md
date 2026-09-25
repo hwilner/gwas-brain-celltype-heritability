@@ -1,6 +1,4 @@
-# Introduction — Paper 1: Cell-Type-Resolved Heritability Atlas of Brain Traits
-
-**Series note:** This is **Paper 1 of 4** in the GWAS × brain cell-type series. It is the first paper and does not build on any former paper. Papers 2 (cross-species mapping), 3 (coloc/TWAS prioritization), and 4 (psychiatric extension) all reuse the harmonized GWAS inputs and cell-type gene programs built here.
+# Introduction — Cell-Type-Resolved Heritability Atlas of Brain Traits
 
 ![Concept figure: genetic signal for brain traits is partitioned across cell-type-specific gene programs to find which brain cell types carry the trait's heritability](figures/01-concept-schematic.png)
 
@@ -49,12 +47,12 @@ GWAS summary statistics are harmonized (build liftover, allele harmonization, mu
 
 1. A fine-grained, method-triangulated cell-type heritability atlas for major neurodegenerative and neuropsychiatric traits across the ABC hierarchy.
 2. Quantification of resolution gains from atlas-scale cell-type references over legacy coarse labels.
-3. Versioned, reusable GWAS inputs and cell-type gene programs that Papers 2–4 consume directly.
+3. Versioned, reusable GWAS inputs and cell-type gene programs that later studies can consume directly.
 4. An open, reproducible S-LDSC/MAGMA/sc-linker pipeline for hierarchical single-cell enrichment.
 
 ## Scope and boundary
 
-Enrichment is statistical association, not causal mechanism; functional validation is out of scope. Analyses use European-ancestry GWAS and LD references, limiting cross-ancestry claims. Only open data are used. Colocalization and gene prioritization at individual loci are deferred to Paper 3; cross-species questions to Paper 2.
+Enrichment is statistical association, not causal mechanism; functional validation is out of scope. Analyses use European-ancestry GWAS and LD references, limiting cross-ancestry claims. Only open data are used. Colocalization and gene prioritization at individual loci, and cross-species questions, are deferred to later work.
 
 ## References
 

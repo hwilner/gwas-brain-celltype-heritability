@@ -72,7 +72,7 @@ A **p-value** answers: *if nothing were going on, how often would I see a result
 
 ### Enrichment ≠ causation
 
-A significant enrichment means disease signal *concentrates* in a cell type's markers. It does not prove that cell type causes the disease — correlated gene sets, LD, and pleiotropy can masquerade. Enrichment is a prioritization map, not a verdict; Papers 2–4 add the orthogonal evidence.
+A significant enrichment means disease signal *concentrates* in a cell type's markers. It does not prove that cell type causes the disease — correlated gene sets, LD, and pleiotropy can masquerade. Enrichment is a prioritization map, not a verdict; orthogonal evidence must come from follow-up analyses.
 
 ### Parametric vs non-parametric: a decision guide
 

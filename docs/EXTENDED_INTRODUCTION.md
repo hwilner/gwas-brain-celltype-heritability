@@ -2,9 +2,8 @@
 
 *A gentle, no-prerequisites walkthrough of what this project does and why. Every technical idea is first shown on a tiny made-up example you can check by hand — no statistics or genetics background needed.*
 
-> **Series note:** This is **Paper 1 of 4** in the GWAS × brain cell-type series. Papers 2 (cross-species mapping), 3 (coloc/TWAS prioritization), and 4 (psychiatric extension) all reuse the harmonized GWAS inputs and cell-type gene programs built here [INTRODUCTION.md](INTRODUCTION.md).
 
-![Concept figure: the Paper 1 pipeline from GWAS summary statistics and Allen Brain Cell Atlas cell-type gene programs to per-cell-type enrichment scores.](figures/01-concept-schematic.png)
+![Concept figure: the pipeline from GWAS summary statistics and Allen Brain Cell Atlas cell-type gene programs to per-cell-type enrichment scores.](figures/01-concept-schematic.png)
 
 *Concept figure: GWAS results and cell-type marker lists are combined into gene-level disease scores, then each cell type is tested for enrichment. (Mermaid-renderable version: [figures/concept_figure.md](figures/concept_figure.md).)*
 
@@ -119,18 +118,8 @@ flowchart TD
 - **Alzheimer's disease:** at the supercluster level, four cell types pass significance — **OPC z = 5.73; Vascular z = 5.51; Microglia z = 3.84; Astrocyte z = 3.52**. In words: AD risk spelling concentrates near the dimmer switches of glial and vascular support cells, not neurons. At the fine cluster level, 9 clusters are significant (top: `Mgl_9`, a microglial cluster, p ≈ 2.2e-21).
 - **Parkinson's disease:** nothing survives at coarse levels (0 of 30 superclusters) — but at the fine cluster level, **11 clusters pass FDR < 0.05**, topped by `CA4_197` (a hippocampal CA4 cluster, p = 5.3e-13). That is a **resolution gain of 0 → 11**: the fine-grained atlas found signal that coarse labels completely blur [resolution_gain.csv](../reports/resolution_gain.csv).
 
-That last point is the thesis of the whole series: better cell-type maps = sharper genetic answers [6,7].
+That last point is the thesis of this work: better cell-type maps = sharper genetic answers [6,7].
 
-## The four-paper series
-
-```mermaid
-flowchart LR
-    P1[Paper 1<br/>gwas-brain-celltype-heritability<br/>THIS REPO: atlas + enrichment] --> P2[Paper 2<br/>cross-species mapping]
-    P1 --> P3[Paper 3<br/>coloc/TWAS gene prioritization]
-    P1 --> P4[Paper 4<br/>psychiatric extension]
-```
-
-Paper 1 (this repo) builds the shared inputs — harmonized GWAS and cell-type gene programs — that Papers 2–4 consume directly.
 
 ## The math, in one sentence each (with links to learn more)
 
@@ -142,7 +131,7 @@ Every quantity below was already built by hand above; here are its name and wher
 
 ## One honest caveat
 
-Enrichment is a **statistical association, not proof of causation** [INTRODUCTION.md — Scope and boundary](INTRODUCTION.md). A cell type lighting up means its regulatory DNA disproportionately carries risk variants — a strong hint about where the disease mechanism lives, and a prioritized map for the follow-ups in Papers 2–4. Also, our GWAS data are European-ancestry-heavy (FinnGen is Finnish), so conclusions about other ancestries need dedicated data.
+Enrichment is a **statistical association, not proof of causation** [INTRODUCTION.md — Scope and boundary](INTRODUCTION.md). A cell type lighting up means its regulatory DNA disproportionately carries risk variants — a strong hint about where the disease mechanism lives, and a prioritized map for follow-up work. Also, our GWAS data are European-ancestry-heavy (FinnGen is Finnish), so conclusions about other ancestries need dedicated data.
 
 ## Where to go next
 

@@ -1,10 +1,6 @@
-# GWAS × Brain Cell-Type Heritability (Paper 1)
+# GWAS × Brain Cell-Type Heritability 
 
 This independent research repository plans and tracks a cell-type-resolved heritability analysis of Alzheimer's and Parkinson's disease GWAS across the modern whole-brain cell-type hierarchies. It provides data-free analysis utilities for transparent review and extension.
-
-## Series position
-
-This is **Paper 1** of the GWAS × brain cell-type series (4 papers). It is the foundation of the series; Papers 2–4 build on its outputs.
 
 ## Research plan
 
