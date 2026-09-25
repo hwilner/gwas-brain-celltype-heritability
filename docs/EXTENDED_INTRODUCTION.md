@@ -4,11 +4,15 @@
 
 > **Series note:** This is **Paper 1 of 4** in the GWAS × brain cell-type series. Papers 2 (cross-species mapping), 3 (coloc/TWAS prioritization), and 4 (psychiatric extension) all reuse the harmonized GWAS inputs and cell-type gene programs built here [INTRODUCTION.md](INTRODUCTION.md).
 
-![Concept figure: the Paper 1 pipeline from GWAS summary statistics and Allen Brain Cell Atlas cell-type gene programs to per-cell-type enrichment scores.](figures/concept_figure.png)
+![Concept figure: the Paper 1 pipeline from GWAS summary statistics and Allen Brain Cell Atlas cell-type gene programs to per-cell-type enrichment scores.](figures/01-concept-schematic.png)
 
 *Concept figure: GWAS results and cell-type marker lists are combined into gene-level disease scores, then each cell type is tested for enrichment. (Mermaid-renderable version: [figures/concept_figure.md](figures/concept_figure.md).)*
 
 ---
+
+![Data collection and measurement workflow: published GWAS summary statistics for Alzheimer's and Parkinson's disease are harmonized and combined with human brain single-cell expression data](figures/02-data-collection.png)
+
+*Data workflow: Published GWAS summary statistics for Alzheimer's and Parkinson's disease are harmonized and combined with human brain single-cell expression data.*
 
 ## DNA: a very long instruction book
 

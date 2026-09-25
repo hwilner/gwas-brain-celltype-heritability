@@ -2,9 +2,9 @@
 
 **Series note:** This is **Paper 1 of 4** in the GWAS × brain cell-type series. It is the first paper and does not build on any former paper. Papers 2 (cross-species mapping), 3 (coloc/TWAS prioritization), and 4 (psychiatric extension) all reuse the harmonized GWAS inputs and cell-type gene programs built here.
 
-**Concept figure:** see [figures/concept_figure.md](figures/concept_figure.md) for the canonical Mermaid concept diagram.
+![Concept figure: genetic signal for brain traits is partitioned across cell-type-specific gene programs to find which brain cell types carry the trait's heritability](figures/01-concept-schematic.png)
 
-*Concept figure: GWAS summary statistics and ABC Atlas cell-type marker programs are combined into gene-level disease scores and tested for enrichment, yielding one heritability-enrichment score per cell type at each level of the cell-type hierarchy. (Mermaid-renderable version: [figures/concept_figure.md](figures/concept_figure.md).)*
+*Figure 1: Genetic signal for brain traits is partitioned across cell-type-specific gene programs to find which brain cell types carry the trait's heritability. (Editable Mermaid source: [figures/concept_figure.md](figures/concept_figure.md).)*
 
 ## Background
 

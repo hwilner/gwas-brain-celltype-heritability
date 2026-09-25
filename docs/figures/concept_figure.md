@@ -1,8 +1,6 @@
 # Concept Figure — Paper 1: Cell-Type-Resolved Heritability Atlas
 
-> **Note:** A raster concept figure (`concept_figure.png`, 1536×1024, FigForge/NeurIPS flat-design style) was generated for this repository. Because the available GitHub tooling can only commit text content (verified: binary payloads are stored corrupted), the faithful figure is provided here as a Mermaid diagram that renders directly on GitHub. If `concept_figure.png` is later uploaded to this directory, it can be embedded as:
->
-> `![Concept figure: the Paper 1 pipeline from GWAS summary statistics and ABC Atlas cell-type gene programs to per-cell-type heritability enrichment scores.](figures/concept_figure.png)`
+> **Note.** The rendered concept figure is [`01-concept-schematic.png`](01-concept-schematic.png) in this folder — a generated scientific illustration. This file keeps the Mermaid source of the same diagram so it remains editable and re-renderable.
 
 **Caption:** Concept figure — the Paper 1 pipeline: harmonized GWAS summary statistics and Allen Brain Cell Atlas cell-type marker programs are combined into gene-level disease scores and tested for enrichment, yielding one score per cell type at every level of the cell-type hierarchy.
 
