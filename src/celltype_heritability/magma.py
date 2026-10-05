@@ -93,29 +93,72 @@ def program_enrichment(
     Model: ``gene_stat ~ 1 + log(n_snps) + 1[gene in program]`` fit by OLS.
     The program coefficient > 0 indicates enrichment of association signal in
     the cell type's marker genes.
+
+    The ``log(n_snps)`` covariate is dropped when it is constant across genes
+    (which is always the case for the ``gene_sizes=None`` default), because a
+    constant column is collinear with the intercept and would leave ``X'X``
+    singular.
+
+    A program whose membership indicator is constant -- no tested genes in the
+    program, or every tested gene in it -- is collinear with the intercept, so
+    its effect is not identifiable. Such programs are reported as ``NaN``
+    instead of raising, which keeps one degenerate program from aborting a
+    whole enrichment table. Callers should filter or report them explicitly;
+    note that :func:`bh_fdr` excludes them from the multiple-testing family.
+
+    Args:
+        gene_stats: Per-gene chi-square statistics, indexed by gene symbol.
+        gene_sets: Mapping of program name to its member genes.
+        gene_sizes: Per-gene SNP counts used for the size covariate. ``None``
+            means no size covariate.
+
+    Returns:
+        DataFrame of :class:`MagmaEnrichmentResult` rows, one per program.
     """
     from scipy import stats
 
     genes = gene_stats.index
+    y = gene_stats.to_numpy(dtype=float)
     if gene_sizes is None:
         gene_sizes = pd.Series(1.0, index=genes)
+    # Clip at 1 so a zero-SNP gene cannot produce a -inf that silently
+    # poisons the whole design matrix.
+    log_size = np.log(
+        gene_sizes.reindex(genes).fillna(1.0).clip(lower=1.0).to_numpy(dtype=float)
+    )
+    has_size = log_size.size > 0 and not np.allclose(log_size, log_size[0])
+
     rows = []
     for ct, members in gene_sets.items():
-        in_prog = genes.isin(list(members)).astype(float)
-        x = np.column_stack(
-            [np.ones(len(genes)), np.log(gene_sizes.reindex(genes).fillna(1.0)), in_prog]
-        )
-        y = gene_stats.to_numpy(dtype=float)
+        in_prog = np.asarray(genes.isin(list(members)), dtype=float)
+        # An all-zero or all-one indicator is collinear with the intercept, so
+        # the program effect is unidentifiable; report NaN rather than crash.
+        if in_prog.sum() in (0, len(genes)):
+            rows.append(
+                MagmaEnrichmentResult(
+                    coefficient=float("nan"),
+                    standard_error=float("nan"),
+                    z_score=float("nan"),
+                    p_value=float("nan"),
+                    n_genes=len(genes),
+                )
+            )
+            continue
+        columns = [np.ones(len(genes)), in_prog]
+        if has_size:
+            columns.insert(1, log_size)
+        x = np.column_stack(columns)
+        program_col = x.shape[1] - 1
         coef, *_ = np.linalg.lstsq(x, y, rcond=None)
         resid = y - x @ coef
         dof = max(len(y) - x.shape[1], 1)
         sigma2 = resid @ resid / dof
-        cov = sigma2 * np.linalg.inv(x.T @ x)
-        se = np.sqrt(cov[2, 2])
-        z = coef[2] / se
+        cov = sigma2 * np.linalg.pinv(x.T @ x)
+        se = np.sqrt(cov[program_col, program_col])
+        z = coef[program_col] / se
         rows.append(
             MagmaEnrichmentResult(
-                coefficient=coef[2],
+                coefficient=coef[program_col],
                 standard_error=se,
                 z_score=z,
                 p_value=2 * stats.norm.sf(abs(z)),
@@ -126,13 +169,24 @@ def program_enrichment(
 
 
 def bh_fdr(p_values: pd.Series) -> pd.Series:
-    """Benjamini-Hochberg FDR-adjusted q-values (deterministic)."""
+    """Benjamini-Hochberg FDR-adjusted q-values (deterministic).
+
+    Non-finite p-values are excluded from the tested family and returned as
+    ``NaN``. This matters because ``NaN`` sorts last in numpy: a naive step
+    would propagate it through the reverse cumulative minimum and blank out
+    the q-values of every testable program.
+    """
     p = p_values.to_numpy(dtype=float)
-    n = len(p)
-    order = np.argsort(p)
-    ranked = p[order]
-    q = ranked * n / (np.arange(n) + 1)
+    testable = np.isfinite(p)
+    n = int(testable.sum())
+    out = np.full(p.shape, np.nan)
+    if n == 0:
+        return pd.Series(out, index=p_values.index)
+    ranked = p[testable]
+    order = np.argsort(ranked, kind="stable")
+    q = ranked[order] * n / (np.arange(n) + 1)
     q = np.minimum.accumulate(q[::-1])[::-1]
-    out = np.empty(n)
-    out[order] = np.minimum(q, 1.0)
+    adjusted = np.empty(n)
+    adjusted[order] = np.minimum(q, 1.0)
+    out[testable] = adjusted
     return pd.Series(out, index=p_values.index)

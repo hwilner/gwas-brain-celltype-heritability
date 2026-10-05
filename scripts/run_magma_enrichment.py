@@ -44,7 +44,17 @@ def enrichment_table(
     sizes = pd.Series(
         {g: len(snp_map[g]) for g in gene_stats.index}, index=gene_stats.index
     )
-    progs = {k: v for k, v in programs.items() if len(v) >= 10}
+    # Keep only programs that are actually testable: at least 10 marker genes,
+    # and at least one of them in the tested gene universe. A program with no
+    # tested genes has an all-zero membership indicator, which is collinear
+    # with the intercept, so it cannot be scored. Dropping these here keeps
+    # `n_programs_tested` equal to the number of programs actually in the
+    # multiple-testing family.
+    tested = set(gene_stats.index)
+    progs = {
+        k: v for k, v in programs.items()
+        if len(v) >= 10 and tested.intersection(v)
+    }
     res = magma.program_enrichment(gene_stats, progs, gene_sizes=sizes)
     res.index.name = "program"
     res = res.reset_index()
