@@ -5,7 +5,8 @@
 # tools, which are too large/heavy for the analysis sandbox, so they were NOT
 # run here. The committed results in reports/ come from the in-repo
 # MAGMA-style pipeline (scripts/run_magma_enrichment.py) run on the same
-# programs. This script is the exact, runnable recipe for the production run.
+# programs. This script is the recipe for the production run, with one known
+# gap: the programs -> .annot.gz converter is not implemented (see step 2).
 #
 # Prereqs:
 #   conda create -n ldsc -c bioconda ldsc magma
@@ -38,13 +39,19 @@ for TRAIT in AD_Bellenguez2022 PD_Nalls2019; do
 done
 
 # ------------------ 2. marker programs -> per-SNP annotations -> LD scores
-# scripts/programs_to_annot.py converts reports/gene_programs/*.json into
-# per-chromosome .annot.gz files against the 1000G EUR BIM positions with a
-# 10 kb flank (same window as the MAGMA-style run):
-#   python scripts/programs_to_annot.py \
-#       --programs reports/gene_programs/programs_cluster_top100.json \
-#       --bim-prefix "$REF/1000G_EUR_Phase3_plink/1000G.EUR.QC." \
-#       --window 10000 --out "$OUT/annots/cluster"
+# GAP: the programs -> .annot.gz converter is not implemented in this
+# repository, so this step cannot be run as written. It is not a missing
+# checkout: scripts/programs_to_annot.py has never been committed (verified
+# with `git log --all -- scripts/programs_to_annot.py`). Until it exists, the
+# per-SNP annotations have to be produced with an equivalent tool, e.g.
+#   python -m celltype_heritability.annotations ...   # binary SNP-in-program
+# or written directly in the LDSC .annot.gz format:
+#   chr, pos_bp, cM, pos-100bp, pos_bp, pos+100bp, <one 0/1 column per program>
+# The rest of this script assumes that layout and the
+# "$OUT/annots/<level>/<PROGRAM>.<CHR>.annot.gz" naming.
+#
+# The in-repo equivalent that IS runnable today is
+# scripts/run_magma_enrichment.py, which maps programs straight to genes.
 for CHR in {1..22}; do
   for ANNOT in "$OUT"/annots/cluster/*.${CHR}.annot.gz; do
     ldsc --l2 --bfile "$REF/1000G_EUR_Phase3_plink/1000G.EUR.QC.${CHR}" \

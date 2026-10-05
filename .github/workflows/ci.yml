@@ -1,0 +1,74 @@
+# Continuous integration for the data-free utilities.
+#
+# The suite is fully synthetic and data-free (see README "Current status"), so
+# it runs in seconds on every push and pull request with no external services,
+# credentials, or staged GWAS/atlas downloads.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Cancel superseded runs on the same ref so a force-push does not queue work
+  # whose result nobody will read.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    # Fail the whole check as soon as any one Python version breaks, rather
+    # than reporting a partially green matrix.
+    name: pytest (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      # Report every failure instead of stopping at the first one.
+      fail-fast: false
+      matrix:
+        # Matches requires-python in pyproject.toml and the versions named in
+        # the README.
+        python-version: ['3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install package and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Verify the package and its submodules import
+        run: python -c "import celltype_heritability as c; print(c.__version__)"
+
+      - name: Compile every source and test file
+        run: python -m compileall -q src tests scripts
+
+      - name: Run the test suite
+        run: python -m pytest -v
+
+  shellcheck:
+    # The LDSC production recipe is a shell script; catch syntax errors and
+    # common quoting mistakes before it is ever staged against real data.
+    name: shell syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check shell scripts parse
+        run: |
+          for script in scripts/*.sh; do
+            echo "checking $script"
+            bash -n "$script"
+          done
