@@ -18,14 +18,12 @@ def score_programs(
 ) -> pd.DataFrame:
     """Mean scaled expression of each gene program per cell type.
 
-    Parameters
-    ----------
-    expression : genes x cell-types DataFrame of (normalized) expression.
-    program_genes : mapping of program name -> member genes.
+    Args:
+        expression: Genes x cell-types DataFrame of (normalized) expression.
+        program_genes: Mapping of program name -> member genes.
 
-    Returns
-    -------
-    DataFrame (cell types x programs) of mean z-scored expression.
+    Returns:
+        DataFrame (cell types x programs) of mean z-scored expression.
     """
     z = expression.sub(expression.mean(axis=1), axis=0).div(
         expression.std(axis=1).replace(0, np.nan), axis=0

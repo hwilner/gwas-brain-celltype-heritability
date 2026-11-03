@@ -43,17 +43,19 @@ def run_sldsc_regression(
 ) -> SLDSCResult:
     """Fit E[chi2] = 1 + N * sum_k tau_k * l2_k by WLS with jackknife SEs.
 
-    Parameters
-    ----------
-    chisq : (n_snps,) chi-square association statistics.
-    ld_scores : DataFrame (n_snps, n_annots) of partitioned LD scores.
-        A free intercept column is added automatically (do not include one).
-    n_samples : GWAS sample size.
-    n_blocks : number of contiguous blocks for the delete-one jackknife.
+    Args:
+        chisq: (n_snps,) chi-square association statistics.
+        ld_scores: DataFrame (n_snps, n_annots) of partitioned LD scores. A
+            free intercept column is added automatically (do not include one).
+        n_samples: GWAS sample size.
+        n_blocks: Number of contiguous blocks for the delete-one jackknife.
 
-    Returns
-    -------
-    SLDSCResult with per-annotation tau coefficients (per-allele scale).
+    Returns:
+        SLDSCResult with per-annotation tau coefficients (per-allele scale).
+
+    Raises:
+        ValueError: If ``chisq`` and ``ld_scores`` do not have the same SNP
+            count.
     """
     from scipy import stats
 

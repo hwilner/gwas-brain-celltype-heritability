@@ -24,16 +24,20 @@ def table_to_bed(
 ) -> pd.DataFrame:
     """Normalize a marker/peak table to a BED-like DataFrame.
 
-    Parameters
-    ----------
-    table : DataFrame with at least chromosome/start/end columns.
-    chrom_col, start_col, end_col : column names carrying the interval.
-    name_col : optional column with interval names (e.g. gene symbols).
-    score_col : optional column with scores (e.g. marker specificity).
+    Args:
+        table: DataFrame with at least chromosome/start/end columns.
+        chrom_col: Column name carrying the interval chromosome.
+        start_col: Column name carrying the interval start.
+        end_col: Column name carrying the interval end.
+        name_col: Optional column with interval names (e.g. gene symbols).
+        score_col: Optional column with scores (e.g. marker specificity).
 
-    Returns
-    -------
-    DataFrame with columns ``BED_COLUMNS`` sorted by (chrom, start).
+    Returns:
+        DataFrame with columns ``BED_COLUMNS`` sorted by (chrom, start).
+
+    Raises:
+        ValueError: If any of ``chrom_col``/``start_col``/``end_col`` are
+            missing from ``table``, or any interval has ``end <= start``.
     """
     missing = {chrom_col, start_col, end_col} - set(table.columns)
     if missing:
@@ -94,15 +98,13 @@ def build_celltype_annotations(
 ) -> pd.DataFrame:
     """Build one binary annotation column per cell type.
 
-    Parameters
-    ----------
-    beds : mapping of cell-type name -> BED-like DataFrame.
-    snps : DataFrame with ``chrom`` and ``pos`` columns (SNP universe).
-    window : flanking window added to every interval before overlap.
+    Args:
+        beds: Mapping of cell-type name -> BED-like DataFrame.
+        snps: DataFrame with ``chrom`` and ``pos`` columns (SNP universe).
+        window: Flanking window added to every interval before overlap.
 
-    Returns
-    -------
-    DataFrame indexed like ``snps`` with one 0/1 column per cell type.
+    Returns:
+        DataFrame indexed like ``snps`` with one 0/1 column per cell type.
     """
     return pd.DataFrame(
         {

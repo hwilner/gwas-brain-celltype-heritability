@@ -26,17 +26,20 @@ def compute_ld_scores(
 
         l2(j, k) = sum_i r_ij^2 * a_k(i)   over SNPs i within ``window_bp`` of j
 
-    Parameters
-    ----------
-    genotypes : (n_samples, n_snps) array of genotype dosages.
-    snp_positions : (n_snps,) base-pair positions (single chromosome toy model).
-    annotations : optional DataFrame (n_snps, n_annots) of 0/1 annotations.
-        If None, a single "base" annotation of all ones is used.
-    window_bp : flank, in bp, defining the LD window around each SNP.
+    Args:
+        genotypes: (n_samples, n_snps) array of genotype dosages.
+        snp_positions: (n_snps,) base-pair positions (single chromosome toy
+            model).
+        annotations: Optional DataFrame (n_snps, n_annots) of 0/1 annotations.
+            If None, a single "base" annotation of all ones is used.
+        window_bp: Flank, in bp, defining the LD window around each SNP.
 
-    Returns
-    -------
-    DataFrame (n_snps, n_annots) of partitioned LD scores.
+    Returns:
+        DataFrame (n_snps, n_annots) of partitioned LD scores.
+
+    Raises:
+        ValueError: If ``snp_positions`` length does not match the number of
+            genotype columns.
     """
     g = np.asarray(genotypes, dtype=float)
     n, m = g.shape

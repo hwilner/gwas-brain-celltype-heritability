@@ -21,20 +21,21 @@ def map_snps_to_genes(
 ) -> dict[str, list[int]]:
     """Map SNPs to genes whose (flanked) span contains the SNP position.
 
-    Parameters
-    ----------
-    snps : DataFrame with columns ``chrom`` and ``pos``.
-    genes : DataFrame with columns ``gene``, ``chrom``, ``start``, ``end``.
-    window : flank added to both gene boundaries (bp).
+    Args:
+        snps: DataFrame with columns ``chrom`` and ``pos``.
+        genes: DataFrame with columns ``gene``, ``chrom``, ``start``, ``end``.
+        window: Flank added to both gene boundaries (bp).
 
-    Returns
-    -------
-    Mapping of gene name -> list of SNP row indices.
+    Returns:
+        Mapping of gene name -> list of SNP row indices.
 
-    Notes
-    -----
-    Uses a per-chromosome sorted-position sweep (binary search per gene),
-    so it scales to genome-wide SNP sets (millions of SNPs x ~20k genes).
+    Raises:
+        ValueError: If ``snps`` lacks the ``chrom``/``pos`` columns, or
+            ``genes`` lacks any of the required columns.
+
+    Note:
+        Uses a per-chromosome sorted-position sweep (binary search per gene),
+        so it scales to genome-wide SNP sets (millions of SNPs x ~20k genes).
     """
     if not {"chrom", "pos"} <= set(snps.columns):
         raise ValueError("snps must have 'chrom' and 'pos' columns")
