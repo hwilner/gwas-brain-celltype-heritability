@@ -117,11 +117,39 @@ concordance until the official S-LDSC run completes (issue #8).
 | AD | 0.81 |
 | PD | 0.86 |
 
-## Figures
+## Results figures
 
-No results figures are committed yet; figure scripts are tracked as issue
-#7. Concept schematics (`01-concept-schematic.png`,
-`02-data-collection.png`) live in `docs/figures/`.
+Every results figure is produced by a committed script,
+`src/celltype_heritability/figures.py` (issue #7), which reads only the
+versioned `reports/` tables and regenerates all panels deterministically:
+
+```bash
+python -m celltype_heritability.figures --reports-dir reports --out-dir figures
+```
+
+Synthetic-data tests in `tests/test_figures.py` cover schema validation,
+deterministic regeneration (byte-identical PNGs across runs), and graceful
+skipping of uncommitted tables. Concept schematics
+(`01-concept-schematic.png`, `02-data-collection.png`) live in
+`docs/figures/`.
+
+**Figure 1. Resolution gain of the fine (cluster) over the coarse
+(supercluster) taxonomy** (`figures/resolution_gain.png`; source:
+`reports/resolution_gain.csv`). Counts of FDR q < 0.05 programs per trait
+at each level; for PD the entire signal is a resolution effect (0 at
+supercluster level vs 11 at cluster level).
+
+**Figure 2. Enrichment volcano plots per trait x level**
+(`figures/volcano_<TRAIT>_<LEVEL>.png`; sources: the matching
+`reports/magma_enrichment_*.csv`). Program coefficient beta vs -log10(p)
+with FDR q < 0.05 programs in red and the top five labelled. Panels exist
+for every committed (trait x level) cell; the PD cluster-level panel is
+generated automatically once its table is committed (issue #10).
+
+**Figure 3. Top programs per trait x level**
+(`figures/top_programs_<TRAIT>_<LEVEL>.png`). The ten strongest programs
+by p-value with beta +/- SE bars; red bars are FDR-significant. The PD
+cluster-level panel is likewise pending issue #10.
 
 ## Verification record
 

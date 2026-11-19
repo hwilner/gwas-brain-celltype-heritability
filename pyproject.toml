@@ -18,7 +18,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+# matplotlib is optional so the core statistics install stays light; it is
+# required for the figure scripts (src/celltype_heritability/figures.py) and
+# their tests, so it is also part of the dev extra used by CI.
+dev = ["pytest", "matplotlib"]
+figures = ["matplotlib"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
