@@ -32,7 +32,7 @@ Captioned paper-style tables for all committed runs are in [docs/RESULTS.md](doc
 | AD | 0 | 4 (OPC q = 3.1e-07; Vascular; Microglia; Astrocyte) | 9 (glia-dominated) | `Mgl_9`, p = 2.2e-21 |
 | PD | 0 | 0 (top: Microglia, q = 0.106) | 11 | `CA4_197`, p = 5.3e-13 |
 
-**Current status:** in-repo MAGMA-style runs on FinnGen R11 AD/PD are complete and committed (Tables above; robustness: top-100 vs top-200 marker Spearman ρ = 0.81/0.86). Official S-LDSC and EBI-staged GWAS replications are scripted but not yet run — see open issues.
+**Current status:** in-repo MAGMA-style runs on FinnGen R11 AD/PD are complete and committed (Tables above; robustness: top-100 vs top-200 marker Spearman ρ = 0.81/0.86). Reviewable SVG result figures are committed under `figures/` and regenerate deterministically from `reports/` (`python -m celltype_heritability.figures --reports-dir reports --out-dir figures`); the PD cluster panels appear automatically once #10 lands. Official S-LDSC and EBI-staged GWAS replications are scripted but not yet run — see open issues.
 
 ## Research plan
 
@@ -48,7 +48,7 @@ Captioned paper-style tables for all committed runs are in [docs/RESULTS.md](doc
 | Path | Contents |
 |---|---|
 | `src/celltype_heritability/` | Data-free enrichment utilities: `annotations.py` (binary cell-type SNP annotations), `ldscore.py` (toy partitioned LD scores), `sldsc.py` (S-LDSC-style WLS with jackknife SEs), `magma.py` (gene-level association + program enrichment), `sclinker.py` (disease-program scoring skeleton), `simulate.py` (synthetic GWAS with planted enrichment). |
-| `tests/` | Synthetic tests: planted cell-type enrichment is recovered by both the S-LDSC and MAGMA paths (`python -m pytest -q`). |
+| `tests/` | Synthetic tests: planted cell-type enrichment is recovered by both the S-LDSC and MAGMA paths; committed-package integrity tests keep result tables, metadata, captions, and SVG figures consistent (`python -m pytest -q`). |
 | `docs/` | Research status, methods scope, results, contribution guidance, and [data-access prerequisites](docs/DATA_ACCESS.md). |
 | `.github/` | CI workflow (pytest, Python 3.10–3.12), task-card issue template, PR template. |
 

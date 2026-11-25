@@ -17,7 +17,7 @@ This project deliberately separates **what has actually been run and committed**
 | Enrichment testing | Per-program OLS regression `gene_stat ~ 1 + log(n_snps) + 1[in program]`; coefficient z-score, two-sided normal p, Benjamini–Hochberg q | `magma.program_enrichment`, `magma.bh_fdr` |
 | AD + PD results | AD supercluster: **OPC z=5.73, Vascular z=5.51, Microglia z=3.84, Astrocyte z=3.52** (4 FDR<0.05 of 30); AD cluster: 9 FDR<0.05 of 436 (top `Mgl_9`); PD cluster: **11 FDR<0.05** (top `CA4_197`, p=5.3e-13); PD supercluster: 0 — resolution gain 0→11 | `reports/magma_enrichment_*.csv`, `reports/resolution_gain.csv` |
 | Robustness | Top-100 vs top-200 marker sensitivity: Spearman ρ = 0.81 (AD), 0.86 (PD) on program z-scores | `reports/concordance_topn_sensitivity.csv` |
-| Tests | 15 synthetic-data tests; planted enrichment recovered by both S-LDSC and MAGMA paths | `tests/` (`python -m pytest -q`) |
+| Tests | 29 synthetic-data and committed-package integrity tests; planted enrichment recovered by both S-LDSC and MAGMA paths | `tests/` (`python -m pytest -q`) |
 
 ### Intended (scripted or scoped, not yet run)
 
@@ -54,7 +54,7 @@ The planned GWAS (Bellenguez 2022 AD; Nalls 2019 PD) are registered with resumab
 
 ### Why MAGMA-style gene-level first, S-LDSC second?
 
-S-LDSC is the field standard for partitioned heritability, but it needs an external LD reference panel (1000 Genomes EUR, ~GBs) and the official `ldsc` toolchain. The MAGMA-style path needs only summary statistics and a gene table — everything streamable in-repo — so it unblocks real results early and provides 15-test synthetic validation of the statistics. The in-repo `sldsc.py` implements the core weighted regression with block-jackknife SEs and is validated on synthetic data with planted enrichment; the official run with the baseline-LD model is the intended confirmatory step (`scripts/run_ldsc.sh`). Two methods with different assumptions agreeing is much stronger evidence than either alone.
+S-LDSC is the field standard for partitioned heritability, but it needs an external LD reference panel (1000 Genomes EUR, ~GBs) and the official `ldsc` toolchain. The MAGMA-style path needs only summary statistics and a gene table — everything streamable in-repo — so it unblocks real results early and provides synthetic validation of the statistics. The in-repo `sldsc.py` implements the core weighted regression with block-jackknife SEs and is validated on synthetic data with planted enrichment; the official run with the baseline-LD model is the intended confirmatory step (`scripts/run_ldsc.sh`). Two methods with different assumptions agreeing is much stronger evidence than either alone.
 
 ### Why FDR at 0.05?
 
@@ -117,7 +117,8 @@ Most GWAS (FinnGen included) are overwhelmingly European-ancestry. Effect sizes,
 
 ```bash
 pip install -e ".[dev]"
-python -m pytest -q                                   # 15 tests, synthetic validation
+python -m pytest -q                                   # 29 tests: synthetic validation + committed-package integrity
+python -m celltype_heritability.figures --reports-dir reports --out-dir figures
 python -m celltype_heritability.atlas download        # md5-checked marker tables
 python scripts/run_magma_enrichment.py                # writes reports/*.csv
 ```
