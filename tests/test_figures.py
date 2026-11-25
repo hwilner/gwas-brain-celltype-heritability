@@ -1,9 +1,9 @@
 """Tests for the enrichment atlas figure scripts (issue #7).
 
-Fully synthetic and data-free per CONTRIBUTING.md: a tiny enrichment table
-is fabricated in ``tmp_path`` and the tests assert that figures are written,
-non-trivial in size, deterministic across runs, and that missing tables are
-skipped rather than crashing the build.
+Fully synthetic and data-free per CONTRIBUTING.md: tiny enrichment tables are
+fabricated in ``tmp_path`` and the tests assert that figures are written,
+non-trivial in size, deterministic across runs in both output formats, and
+that missing tables are skipped rather than crashing the build.
 """
 
 import logging
@@ -16,10 +16,13 @@ from celltype_heritability.figures import (
     discover_traits,
     enrichment_table_path,
     load_enrichment_table,
+    load_resolution_gain,
 )
 
 
-def _synthetic_table(programs=("Astro", "Mgl", "OPC", "Vascular")) -> pd.DataFrame:
+def _synthetic_table(
+    programs=("Astro", "Mgl", "OPC", "Vascular"), level="supercluster"
+) -> pd.DataFrame:
     """Four-program synthetic enrichment table with one planted FDR hit."""
     return pd.DataFrame(
         {
@@ -32,17 +35,21 @@ def _synthetic_table(programs=("Astro", "Mgl", "OPC", "Vascular")) -> pd.DataFra
             "q_value": [4e-12, 0.18, 0.36, 0.0054],
             "n_program_genes": [100, 100, 100, 100],
             "trait": ["SYNTH"] * 4,
-            "level": ["supercluster"] * 4,
+            "level": [level] * 4,
         }
     )
 
 
-def _write_reports(reports_dir) -> None:
+def _write_reports(reports_dir, include_cluster=True) -> None:
     """Stage a minimal synthetic reports/ directory."""
     reports_dir.mkdir()
-    _synthetic_table().to_csv(
+    _synthetic_table(level="supercluster").to_csv(
         enrichment_table_path(reports_dir, "SYNTH", "supercluster"), index=False
     )
+    if include_cluster:
+        _synthetic_table(
+            programs=("Astro_1", "Mgl_1", "OPC_1", "Vascular_1"), level="cluster"
+        ).to_csv(enrichment_table_path(reports_dir, "SYNTH", "cluster"), index=False)
     pd.DataFrame(
         {
             "trait": ["SYNTH"],
@@ -61,23 +68,52 @@ def test_load_enrichment_table_validates_schema(tmp_path):
         load_enrichment_table(bad)
 
 
-def test_build_atlas_figures_writes_expected_pngs(tmp_path):
+def test_load_resolution_gain_validates_schema_and_p_values(tmp_path):
+    bad = tmp_path / "bad_gain.csv"
+    pd.DataFrame(
+        {
+            "trait": ["SYNTH"],
+            "n_sig_supercluster": [1],
+            "n_sig_cluster": [3],
+            "min_p_supercluster": [0.0],
+            "min_p_cluster": [1e-20],
+        }
+    ).to_csv(bad, index=False)
+    with pytest.raises(ValueError, match="minimum p-values"):
+        load_resolution_gain(bad)
+
+
+def test_build_atlas_figures_writes_expected_pngs_and_svgs(tmp_path):
     reports = tmp_path / "reports"
     _write_reports(reports)
     out = tmp_path / "figures"
     written = build_atlas_figures(reports, out)
     names = {p.name for p in written}
     assert names == {
-        "volcano_SYNTH_supercluster.png",
-        "top_programs_SYNTH_supercluster.png",
+        "figure1_atlas_overview.png",
+        "figure1_atlas_overview.svg",
+        "figure2_resolution_gain.png",
+        "figure2_resolution_gain.svg",
+        "figure3_SYNTH_cluster_forest.png",
+        "figure3_SYNTH_cluster_forest.svg",
         "resolution_gain.png",
+        "resolution_gain.svg",
+        "top_programs_SYNTH_cluster.png",
+        "top_programs_SYNTH_cluster.svg",
+        "top_programs_SYNTH_supercluster.png",
+        "top_programs_SYNTH_supercluster.svg",
+        "volcano_SYNTH_cluster.png",
+        "volcano_SYNTH_cluster.svg",
+        "volcano_SYNTH_supercluster.png",
+        "volcano_SYNTH_supercluster.svg",
     }
     for path in written:
-        # A real PNG with content, not an empty placeholder.
-        assert path.stat().st_size > 5_000
+        # Real figures with content, not empty placeholders. Publication SVGs
+        # are deliberately compact hand-sized vector files; PNGs are larger.
+        assert path.stat().st_size > (1_500 if path.suffix == ".svg" else 5_000)
 
 
-def test_build_atlas_figures_is_deterministic(tmp_path):
+def test_build_atlas_figures_is_deterministic_in_both_formats(tmp_path):
     reports = tmp_path / "reports"
     _write_reports(reports)
     first = build_atlas_figures(reports, tmp_path / "run1")
@@ -90,14 +126,16 @@ def test_build_atlas_figures_is_deterministic(tmp_path):
 def test_missing_tables_are_skipped_with_warning(tmp_path, caplog):
     """The PD cluster-level gap (issue #10) must not abort the build."""
     reports = tmp_path / "reports"
-    _write_reports(reports)
+    _write_reports(reports, include_cluster=False)
     with caplog.at_level(logging.WARNING):
-        written = build_atlas_figures(reports, tmp_path / "figures")
+        written = build_atlas_figures(reports, tmp_path / "figures", ("svg",))
     assert any("not committed" in r.message for r in caplog.records)
     assert {p.name for p in written} == {
-        "volcano_SYNTH_supercluster.png",
-        "top_programs_SYNTH_supercluster.png",
-        "resolution_gain.png",
+        "figure1_atlas_overview.svg",
+        "figure2_resolution_gain.svg",
+        "resolution_gain.svg",
+        "top_programs_SYNTH_supercluster.svg",
+        "volcano_SYNTH_supercluster.svg",
     }
 
 
