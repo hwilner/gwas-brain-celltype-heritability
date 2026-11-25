@@ -54,7 +54,7 @@ Papers 2–4 depend on this paper's frozen inputs and program tables; a change t
 
 ### 4. Results
 
-Every table below already exists in captioned form in `docs/RESULTS.md`; figures are produced by the scripts tracked in issue #7.
+Every table below already exists in captioned form in `docs/RESULTS.md`; Figures 1–3 are committed as reviewable SVGs and regenerate deterministically with the scripts tracked in issue #7. Figure 4 remains blocked by the uncommitted PD cluster table (issue #10).
 
 | # | Content | Source |
 |---|---|---|
@@ -64,10 +64,10 @@ Every table below already exists in captioned form in `docs/RESULTS.md`; figures
 | Table 4 | PD summary: 0 class / 0 supercluster / 11 cluster hits; top `CA4_197` (p = 5.3e-13) | `docs/RESULTS.md` Table 4 |
 | Table 5 | Resolution gain: fine vs coarse hit counts and minimum p per trait — **the headline table** | `docs/RESULTS.md` Table 5 |
 | Table 6 | Robustness: Spearman ρ = 0.81 (AD) / 0.86 (PD), top-100 vs top-200 z-scores | `docs/RESULTS.md` Table 6 |
-| Fig. 1 | Enrichment atlas overview across trait × level (heatmap or tiled forest) | issue #7 |
-| Fig. 2 | Resolution-gain paired plot (supercluster vs cluster, per trait) | issue #7 |
-| Fig. 3 | AD cluster-level forest plot with 95% intervals | issue #7 |
-| Fig. 4 | PD cluster-level forest plot — **blocked until the PD cluster table is committed (issue #10)** | issues #7, #10 |
+| Fig. 1 | Enrichment atlas overview across trait × level (hit count + minimum p heatmap) | `figures/figure1_atlas_overview.svg` |
+| Fig. 2 | Resolution-gain paired plot (supercluster vs cluster, per trait) | `figures/figure2_resolution_gain.svg` |
+| Fig. 3 | AD cluster-level forest plot with 95% intervals | `figures/figure3_AD_FinnGen_R11_cluster_forest.svg` |
+| Fig. 4 | PD cluster-level forest plot — **blocked until the PD cluster table is committed (issue #10)** | `figures/figure4_PD_FinnGen_R11_cluster_forest.svg` (pending) |
 
 ### 5. Discussion
 - Methodological claim: fine taxonomy resolution is a requirement, not a refinement (PD signal exists *only* at cluster level).
@@ -86,7 +86,7 @@ Every table below already exists in captioned form in `docs/RESULTS.md`; figures
 ## Pre-submission checklist (tracked as issues)
 
 - [x] This outline committed (`docs/MANUSCRIPT_OUTLINE.md`) — issue #6
-- [ ] Figure scripts producing Fig. 1–4 deterministically — issue #7
+- [ ] Figure scripts producing Fig. 1–4 deterministically — Figures 1–3 committed as SVGs; Figure 4 awaits the PD cluster table (#10) — issue #7
 - [ ] PD cluster-level full table committed (removes the known gap in `docs/RESULTS.md` Table 4) — issue #10
 - [ ] Clean-room reproducibility re-run log — issue #8
 - [ ] Official S-LDSC run with external LD reference — scripted; scheduled

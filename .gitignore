@@ -3,3 +3,10 @@ __pycache__/
 .pytest_cache/
 data/
 dist/
+
+# Figures regenerate locally in both formats; commit only the manuscript
+# SVG package. The automation GitHub transport cannot safely push binary PNGs.
+figures/*.png
+figures/resolution_gain.svg
+figures/top_programs_*.svg
+figures/volcano_*.svg

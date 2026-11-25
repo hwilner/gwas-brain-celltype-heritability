@@ -121,35 +121,55 @@ concordance until the official S-LDSC run completes (issue #8).
 
 Every results figure is produced by a committed script,
 `src/celltype_heritability/figures.py` (issue #7), which reads only the
-versioned `reports/` tables and regenerates all panels deterministically:
+versioned `reports/` tables. The manuscript SVG package (Figures 1–3, with
+Figure 4 pending #10) is committed under `figures/`; diagnostic panels and
+PNG copies regenerate locally and are gitignored because the automation
+transport cannot safely push binary files. To regenerate all outputs
+deterministically:
 
 ```bash
 python -m celltype_heritability.figures --reports-dir reports --out-dir figures
 ```
 
 Synthetic-data tests in `tests/test_figures.py` cover schema validation,
-deterministic regeneration (byte-identical PNGs across runs), and graceful
-skipping of uncommitted tables. Concept schematics
+deterministic regeneration (byte-identical PNGs and SVGs across runs in a
+fixed environment), and graceful skipping of uncommitted tables. The
+committed-package checks in `tests/test_results_integrity.py` keep the SVG
+paths wired to these captions. Concept schematics
 (`01-concept-schematic.png`, `02-data-collection.png`) live in
 `docs/figures/`.
 
-**Figure 1. Resolution gain of the fine (cluster) over the coarse
-(supercluster) taxonomy** (`figures/resolution_gain.png`; source:
-`reports/resolution_gain.csv`). Counts of FDR q < 0.05 programs per trait
-at each level; for PD the entire signal is a resolution effect (0 at
+**Figure 1. Enrichment atlas overview**
+(`figures/figure1_atlas_overview.svg`; source:
+`reports/resolution_gain.csv`). Hit count and minimum p-value per trait at
+supercluster and cluster resolution. The PD cluster cell is included from
+the committed resolution-gain table even though its full per-program table
+remains pending (issue #10).
+
+**Figure 2. Resolution gain of the fine (cluster) over the coarse
+(supercluster) taxonomy** (`figures/figure2_resolution_gain.svg`; source:
+`reports/resolution_gain.csv`). Counts of FDR q < 0.05 programs per trait at
+each level; for PD the entire signal is a resolution effect (0 at
 supercluster level vs 11 at cluster level).
 
-**Figure 2. Enrichment volcano plots per trait x level**
-(`figures/volcano_<TRAIT>_<LEVEL>.png`; sources: the matching
-`reports/magma_enrichment_*.csv`). Program coefficient beta vs -log10(p)
-with FDR q < 0.05 programs in red and the top five labelled. Panels exist
-for every committed (trait x level) cell; the PD cluster-level panel is
-generated automatically once its table is committed (issue #10).
+**Figure 3. AD cluster-level enrichment forest plot**
+(`figures/figure3_AD_FinnGen_R11_cluster_forest.svg`; source:
+`reports/magma_enrichment_AD_FinnGen_R11_cluster.csv`). Program coefficients
+with 95% confidence intervals for the nine FDR-significant AD clusters; red
+points mark q < 0.05.
 
-**Figure 3. Top programs per trait x level**
-(`figures/top_programs_<TRAIT>_<LEVEL>.png`). The ten strongest programs
-by p-value with beta +/- SE bars; red bars are FDR-significant. The PD
-cluster-level panel is likewise pending issue #10.
+**Figure 4. PD cluster-level enrichment forest plot** (pending; will be
+written to `figures/figure4_PD_FinnGen_R11_cluster_forest.svg` from
+`reports/magma_enrichment_PD_FinnGen_R11_cluster.csv`). This panel is
+blocked until the PD cluster-level full table is committed (issue #10).
+
+**Supplementary diagnostic panels.** Volcano plots regenerate as
+`figures/volcano_<TRAIT>_<LEVEL>.{png,svg}` and show coefficient vs -log10(p)
+with FDR hits highlighted and the top five labelled; top-program panels
+regenerate as `figures/top_programs_<TRAIT>_<LEVEL>.{png,svg}` and show the
+ten strongest programs by p-value with beta +/- SE bars. These panels cover
+every committed (trait x level) cell; the PD cluster-level panels are
+generated automatically once issue #10 lands.
 
 ## Verification record
 
